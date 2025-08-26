@@ -7,6 +7,7 @@ const ROUTER_ADDRESS = "0x3f3b6d28e79e13d5069f14e737b819468e0d468b";
 const ROUTER_ABI = [
   "function getAmountsOut(uint amountIn, address[] memory path) public view returns (uint[] memory amounts)",
   "function swapExactETHForTokens(uint amountOutMin, address[] calldata path, address to, uint deadline) external payable returns (uint[] memory amounts)",
+  "function multicall(bytes[] calldata data) external payable returns (bytes[] memory results)", // TAMBAHKAN INI
 ];
 
 const delay = (ms: number): Promise<void> =>
@@ -24,49 +25,54 @@ async function performSwap(
     ROUTER_ABI,
     wallet
   );
-
   const amountIn = ethers.parseUnits(task.amountIn, task.tokenIn.decimals);
 
   try {
-    console.log("[1/2] Mempersiapkan swap (melewatkan pengecekan harga)...");
+    // 1. Persiapan data untuk dibungkus dalam multicall
+    console.log("[1/3] Mempersiapkan data perintah untuk multicall...");
     const path = [task.tokenIn.address, task.tokenOut.address];
-    const deadline = Math.floor(Date.now() / 1000) + 60 * 20; 
+    const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 menit
+    const amountOutMin = 0n; // Tetap 0 untuk testnet
 
-   
-    const amountOutMin = 0n; 
-    console.log(
-      "      Slippage protection dinonaktifkan (amountOutMin = 0)."
+    // Membuat "interface" untuk meng-encode perintah kita
+    const routerInterface = new ethers.Interface(ROUTER_ABI);
+
+    // Meng-encode perintah swapExactETHForTokens menjadi format 'bytes'
+    const encodedSwapData = routerInterface.encodeFunctionData(
+      "swapExactETHForTokens",
+      [amountOutMin, path, wallet.address, deadline]
     );
 
-    console.log("[2/2] Mengambil gas fee dan mengirim transaksi swap...");
+    console.log("      ✅ Data perintah swap berhasil di-encode.");
+
+    // 2. Mengambil Gas Fee
+    console.log("[2/3] Mengambil data gas fee terkini...");
     const feeData = await provider.getFeeData();
 
-    const swapTx = await routerContract.swapExactETHForTokens(
-      amountOutMin, 
-      path,
-      wallet.address,
-      deadline,
+    // 3. Menjalankan Multicall
+    console.log("[3/3] Mengirim transaksi via multicall...");
+    const multicallTx = await routerContract.multicall(
+      [encodedSwapData], // Perintah yang sudah di-encode dimasukkan ke dalam array
       {
-        value: amountIn,
+        value: amountIn, // Jumlah XOS yang dikirim tetap di sini
         maxFeePerGas: feeData.maxFeePerGas,
         maxPriorityFeePerGas: feeData.maxPriorityFeePerGas,
         gasLimit: 300000,
       }
     );
 
-    await swapTx.wait();
-    console.log("      SWAP BERHASIL!");
+    await multicallTx.wait();
+    console.log("      🎉 SWAP BERHASIL (via Multicall)!");
     console.log(
-      `      Lihat transaksi: https://testnet.xoscan.io/tx/${swapTx.hash}`
+      `      🔗 Lihat transaksi: https://testnet.xoscan.io/tx/${multicallTx.hash}`
     );
     return true;
   } catch (error: any) {
-    console.error(`     GAGAL menjalankan tugas: ${task.taskName}`);
-    console.error(`     Pesan Error: ${error.reason || error.message}`);
+    console.error(`      ❌ GAGAL menjalankan tugas: ${task.taskName}`);
+    console.error(`      Pesan Error: ${error.reason || error.message}`);
     return false;
   }
 }
-
 
 async function main() {
   const rpcUrl = process.env.RPC_URL;
