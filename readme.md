@@ -100,9 +100,11 @@ Open `src/swap.ts` and adjust the `minDelayMinutes` and `maxDelayMinutes` variab
 ```typescript
 // src/swap.ts -> inside main()
 
-// --- (BONUS) Konfigurasi untuk jeda waktu acak ---
-const minDelayMinutes = 2; // Jeda minimal 2 menit
-const maxDelayMinutes = 5; // Jeda maksimal 5 menit
+const minDelayMinutes = 2; // Minimal delay 2 minutes
+const maxDelayMinutes = 5; // Maximum delay 5 minutes
+```
+
+
 **Example tasks.ts Configuration**
 
 This example configures the bot to swap 0.01 of the native token (XOS) for the BONK token.
