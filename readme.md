@@ -1,20 +1,25 @@
-# 🚀 Automated DEX Swap Bot for EVM Testnets
+# StealthSwap Bot: An Advanced Testnet Swap Automator
 
-[![Node.js](https://img.shields.io/badge/Node.js-v18%2B-green?logo=node.js)](https://nodejs.org) 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript)](https://www.typescriptlang.org/) 
-[![Ethers.js](https://img.shields.io/badge/Ethers.js-6.x-purple?logo=ethereum)](https://docs.ethers.org/) 
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+*An intelligent, TypeScript-based bot for automating token swaps on EVM testnets, designed to mimic human behavior for airdrop farming simulations and protocol stress-testing.*
+
+<p align="center">
+  <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT">
+  <img src="https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript&logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Node.js-v18%2B-green?logo=node.js&logoColor=white" alt="Node.js">
+  <img src="https://img.shields.io/badge/Ethers.js-6.x-purple?logo=ethereum&logoColor=white" alt="Ethers.js">
+  <img src="https://img.shields.io/badge/status-active-brightgreen" alt="Status">
+</p>
 
 ---
 
 ## 📖 Overview
 
-This repository contains a sophisticated, **TypeScript-based bot** designed to automate token swaps on **EVM-compatible testnet environments**.  
+This repository contains a sophisticated, **TypeScript-based bot** designed to automate token swaps on **EVM-compatible testnet environments**. 
 It mimics the behavior of a manual user by leveraging the DEX's **multicall** function — making it a powerful tool for:
 
-- 🧪 Protocol testing  
-- 🛠 Development workflows  
-- 🎯 Advanced airdrop farming simulations  
+- 🧪 Protocol testing 
+- 🛠 Development workflows 
+- 🎯 Advanced airdrop farming simulations 
 
 The bot is **configurable**, **type-safe**, and handles on-chain interactions securely and efficiently using **Ethers.js**.
 
@@ -22,38 +27,38 @@ The bot is **configurable**, **type-safe**, and handles on-chain interactions se
 
 ## ✨ Features
 
-- 🤖 **Dynamic Task Queue** – Configure multiple token swaps to run sequentially.  
-- 🕵️‍♂️ **Mimics dApp Behavior** – Uses the DEX’s multicall so transactions look like they came from the official UI.  
-- ⛽ **Automated Gas Fees** – Fetches current network gas prices (`EIP-1559`) dynamically.  
-- ⏱️ **Configurable Delays** – Add delays between swaps to simulate real user actions.  
-- 🔒 **Secure Key Management** – Store private keys safely in `.env` files.  
-- 💪 **Type-Safe** – Written 100% in TypeScript for maximum safety.  
+- ♾️ **Continuous & Randomized Execution**: Runs in an infinite loop, randomly selecting a task from your configuration file in each cycle to better simulate human activity.
+- 🕵️‍♂️ **Mimics dApp Behavior**: Uses the DEX’s `multicall` function so transactions look like they came from the official UI, crucial for airdrop eligibility.
+- ⛽ **Automated Gas Fees**: Fetches current network gas prices (`EIP-1559`) dynamically for optimal transaction costs.
+- ⏱️ **Randomized Delays**: Automatically waits for a random duration between swaps within a configurable range (e.g., 2 to 5 minutes) to avoid predictable, bot-like patterns.
+- 📋 **Dynamic Task Queue**: Easily define a list of different token swaps for the bot to choose from.
+- 🔒 **Secure Key Management**: Store private keys safely in `.env` files, keeping them separate from the source code.
+- 💪 **Type-Safe**: Written 100% in TypeScript for maximum safety and developer experience.
 
 ---
 
 ## 🛠 Tech Stack
 
-- **TypeScript** – Robust, scalable, type-safe  
-- **Node.js** – JavaScript runtime  
-- **Ethers.js** – Ethereum blockchain interactions  
-- **ts-node** – Run TypeScript directly  
+- **TypeScript**: For robust, scalable, and type-safe code.
+- **Node.js**: As the JavaScript runtime environment.
+- **Ethers.js (v6)**: A complete and modern library for interacting with EVM-compatible blockchains.
+- **ts-node**: To execute TypeScript files directly.
+- **dotenv**: For managing environment variables.
 
 ---
 
-## 📦 Prerequisites
+## 🏁 Getting Started
+
+### Prerequisites
 
 Make sure you have installed:
-
-- [Node.js](https://nodejs.org/) (v18 or later)  
-- npm or yarn  
-- [VS Code](https://code.visualstudio.com/) or any code editor  
+- [Node.js](https://nodejs.org/) (v18 or later) 
+- npm or yarn 
+- [VS Code](https://code.visualstudio.com/) or any code editor 
 
 You’ll also need:
-
-- An **EVM-compatible burner wallet** (⚠️ never use your main wallet)  
-- Some **testnet tokens** (e.g., Sepolia ETH, XOS) to pay gas fees  
-
----
+- An **EVM-compatible burner wallet** (⚠️ never use your main wallet).
+- Some **testnet tokens** (e.g., Sepolia ETH, XOS) to pay gas fees.
 
 ### Installation
 
@@ -82,20 +87,22 @@ You’ll also need:
     PRIVATE_KEY="0x..."
     ```
 
+---
+
 ## ⚙️ Configuration
 
-The bot's entire behavior is controlled by the `src/tasks.ts` file. This is where you define which tokens to swap and in what amounts.
+The bot's behavior is primarily controlled by two files: `swap.ts` (for delay settings) and `tasks.ts` (for swap targets).
 
-The `SWAP_TASKS` array holds a list of swap operations. Each task object must conform to the `SwapTask` interface.
+### 1. Randomized Delay (`src/swap.ts`)
+
+Open `src/swap.ts` and adjust the `minDelayMinutes` and `maxDelayMinutes` variables inside the `main()` function to control the random wait time between transactions.
 
 ```typescript
-export interface SwapTask {
-  taskName: string;
-  tokenIn: Token;
-  tokenOut: Token;
-  amountIn: string;
-}
-```
+// src/swap.ts -> inside main()
+
+// --- (BONUS) Konfigurasi untuk jeda waktu acak ---
+const minDelayMinutes = 2; // Jeda minimal 2 menit
+const maxDelayMinutes = 5; // Jeda maksimal 5 menit
 **Example tasks.ts Configuration**
 
 This example configures the bot to swap 0.01 of the native token (XOS) for the BONK token.
