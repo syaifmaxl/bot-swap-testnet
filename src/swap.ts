@@ -16,15 +16,31 @@ const delay = (ms: number): Promise<void> =>
 async function performSwap(
   task: SwapTask,
   wallet: Wallet,
-  provider: Provider
+  provider: Provider,
+  minAmount: number,
+  maxAmount: number
 ): Promise<boolean> {
   console.log(`\n▶️  Memulai tugas: ${task.taskName}`);
+
   const routerContract: Contract = new ethers.Contract(
     ROUTER_ADDRESS,
     ROUTER_ABI,
     wallet
   );
-  const amountIn = ethers.parseUnits(task.amountIn, task.tokenIn.decimals);
+
+  const randomAmount = Math.random() * (maxAmount - minAmount) + minAmount;
+  const amountInString = randomAmount.toFixed(
+    Math.floor(Math.random() * 3) + 4
+  );
+  const amountIn = ethers.parseUnits(amountInString, task.tokenIn.decimals);
+
+  console.log(
+    `      💸 Jumlah swap acak ditentukan: ${amountInString} ${task.tokenIn.symbol.replace(
+      "W",
+      ""
+    )}`
+  );
+
   try {
     console.log("[1/3] Mempersiapkan data perintah untuk multicall...");
     const path = [task.tokenIn.address, task.tokenOut.address];
@@ -40,7 +56,7 @@ async function performSwap(
     const feeData = await provider.getFeeData();
     console.log("[3/3] Mengirim transaksi via multicall...");
     const multicallTx = await routerContract.multicall([encodedSwapData], {
-      value: amountIn,
+      value: amountIn, 
       maxFeePerGas: feeData.maxFeePerGas,
       maxPriorityFeePerGas: feeData.maxPriorityFeePerGas,
       gasLimit: 300000,
@@ -67,16 +83,23 @@ async function main() {
     );
   }
 
-  const minDelayMinutes = 1; 
-  const maxDelayMinutes = 3; 
+  const minAmount = 0.001;
+  const maxAmount = 0.009;
+
+  const minDelayMinutes = 1;
+  const maxDelayMinutes = 3;
 
   console.log("🚀 Bot Swap Testnet Dimulai (Mode Acak & Berulang)...");
+  console.log(`Tekan CTRL + C untuk menghentikan bot.`);
 
   const provider: JsonRpcProvider = new ethers.JsonRpcProvider(rpcUrl);
   const wallet: Wallet = new ethers.Wallet(privateKey, provider);
 
   console.log(`Terhubung dengan dompet: ${wallet.address}`);
   console.log(`Mengimpor ${SWAP_TASKS.length} jenis tugas dari tasks.ts...`);
+  console.log(
+    `Jumlah swap akan diacak antara ${minAmount} dan ${maxAmount} XOS.`
+  );
 
   let taskCount = 0;
   while (true) {
@@ -86,7 +109,7 @@ async function main() {
     const randomIndex = Math.floor(Math.random() * SWAP_TASKS.length);
     const randomTask = SWAP_TASKS[randomIndex];
 
-    await performSwap(randomTask, wallet, provider);
+    await performSwap(randomTask, wallet, provider, minAmount, maxAmount);
 
     const randomDelayMs =
       (Math.random() * (maxDelayMinutes - minDelayMinutes) + minDelayMinutes) *

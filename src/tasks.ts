@@ -8,7 +8,6 @@ export interface SwapTask {
   taskName: string;
   tokenIn: Token;
   tokenOut: Token;
-  amountIn: string;
 }
 
 const SWAP_TASKS: SwapTask[] = [
@@ -24,7 +23,6 @@ const SWAP_TASKS: SwapTask[] = [
       symbol: "BONK",
       decimals: 18,
     },
-    amountIn: "0.007",
   },
   {
     taskName: "Tukar XOS ke PENGU (via swapExactETHForTokens)",
@@ -38,7 +36,6 @@ const SWAP_TASKS: SwapTask[] = [
       symbol: "PENGU",
       decimals: 18,
     },
-    amountIn: "0.006",
   },
   {
     taskName: "Tukar XOS ke TST (via swapExactETHForTokens)",
@@ -52,7 +49,6 @@ const SWAP_TASKS: SwapTask[] = [
       symbol: "TST",
       decimals: 18,
     },
-    amountIn: "0.009",
   },
   {
     taskName: "Tukar XOS ke USDC (via swapExactETHForTokens)",
@@ -66,7 +62,6 @@ const SWAP_TASKS: SwapTask[] = [
       symbol: "USDC",
       decimals: 18,
     },
-    amountIn: "0.002",
   },
   {
     taskName: "Tukar XOS ke USDT (via swapExactETHForTokens)",
@@ -80,7 +75,6 @@ const SWAP_TASKS: SwapTask[] = [
       symbol: "USDT",
       decimals: 18,
     },
-    amountIn: "0.006",
   },
   {
     taskName: "Tukar XOS ke RAY (via swapExactETHForTokens)",
@@ -94,7 +88,6 @@ const SWAP_TASKS: SwapTask[] = [
       symbol: "RAY",
       decimals: 18,
     },
-    amountIn: "0.008",
   },
   {
     taskName: "Tukar XOS ke WIF (via swapExactETHForTokens)",
@@ -108,7 +101,6 @@ const SWAP_TASKS: SwapTask[] = [
       symbol: "WIF",
       decimals: 18,
     },
-    amountIn: "0.004",
   },
   {
     taskName: "Tukar XOS ke JUP (via swapExactETHForTokens)",
@@ -122,7 +114,6 @@ const SWAP_TASKS: SwapTask[] = [
       symbol: "JUP",
       decimals: 18,
     },
-    amountIn: "0.002",
   },
   {
     taskName: "Tukar XOS ke TRUMP (via swapExactETHForTokens)",
@@ -136,7 +127,6 @@ const SWAP_TASKS: SwapTask[] = [
       symbol: "TRUMP",
       decimals: 18,
     },
-    amountIn: "0.009",
   },
   {
     taskName: "Tukar XOS ke SOL (via swapExactETHForTokens)",
@@ -150,7 +140,6 @@ const SWAP_TASKS: SwapTask[] = [
       symbol: "SOL",
       decimals: 18,
     },
-    amountIn: "0.003",
   },
   {
     taskName: "Tukar XOS ke BNB (via swapExactETHForTokens)",
@@ -164,7 +153,6 @@ const SWAP_TASKS: SwapTask[] = [
       symbol: "BNB",
       decimals: 18,
     },
-    amountIn: "0.001",
   },
 ];
 
